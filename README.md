@@ -67,7 +67,7 @@ If you are experienced with Linux, you can quickly install Photonic3D with the f
 
 Latest stable:
 ```
-sudo wget https://github.com/area515/Creation-Workshop-Host/raw/master/host/bin/start.sh
+sudo wget https://github.com/resin8it/Photonic3D/raw/master/host/bin/start.sh
 sudo chmod 777 start.sh
 sudo ./start.sh
 ```
