@@ -1,0 +1,131 @@
+<html>
+    <head>
+        <title>Controls page</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="../jquery/jquery.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="../bootstrap/js/bootstrap.min.js"></script>
+
+        <!-- Latest v1 Angular -->
+        <script src="../angular/js/angular.min.js"></script>
+
+        <script src="js/moment.min.js"></script>
+		
+		<script src="js/printflow.js"></script>	
+		<script src="js/js.cookie.js"></script>
+		<script>
+		function init() {
+			// just grabbing the first printer available, since it's embedded this should be fine :)! Only downside printer would need to be started!
+			$.getJSON('/services/printers/getFirstAvailablePrinter').success(function(data) {
+	   	        configurationObject = data["configuration"];
+	   	    	printerName = configurationObject["name"];
+		     })
+		     startpage();
+		}
+		
+		function changez(height,speed) {
+			$.getJSON('../services/printers/executeGCode/'+printerName+'/G1 Z' + height + ' F'+ speed);  
+		}
+		
+		function homez() {
+			$.getJSON('../services/printers/executeGCode/'+printerName+'/G28 Z0');
+		}
+		
+		function showLogo() {
+			$.getJSON('../services/printers/showLogo/'+printerName);
+		}
+		
+		function showGrid(pixels){
+			$.getJSON('../services/printers/showGridScreen/'+ printerName +"/" + pixels);
+		}
+		
+		$(document).ready(function(){
+		    $(".homeClick").mouseup(function(){
+		    	$('#home').attr('src','images/home.png');
+		    });
+		    $(".homeClick").mousedown(function(){
+		    	$('#home').attr('src','images/homeGrey.png');
+		    });
+		    
+		    $(".testClick").mouseup(function(){
+		    	$('#enable').attr('src','images/testDisplay.png');
+		    });
+		    $(".testClick").mousedown(function(){
+		    	$('#enable').attr('src','images/testDisplayGrey.png');
+		    });
+		    
+		    $(".oneDown").mouseup(function(){
+		    	$('#oneDown').attr('src','images/1Down.png');
+		    });
+		    $(".oneDown").mousedown(function(){
+		    	$('#oneDown').attr('src','images/1DownGrey.png');
+		    });
+		    $(".tenDown").mouseup(function(){
+		    	$('#tenDown').attr('src','images/10Down.png');
+		    });
+		    $(".tenDown").mousedown(function(){
+		    	$('#tenDown').attr('src','images/10DownGrey.png');
+		    });
+		    $(".oneUp").mouseup(function(){
+		    	$('#oneUp').attr('src','images/1Up.png');
+		    });
+		    $(".oneUp").mousedown(function(){
+		    	$('#oneUp').attr('src','images/1UpGrey.png');
+		    });
+		    $(".tenUp").mouseup(function(){
+		    	$('#tenUp').attr('src','images/10Up.png');
+		    });
+		    $(".tenUp").mousedown(function(){
+		    	$('#tenUp').attr('src','images/10UpGrey.png');
+		    });
+		    $(".fivetyUp").mouseup(function(){
+		    	$('#fivetyUp').attr('src','images/50Up.png');
+		    });
+		    $(".fivetyUp").mousedown(function(){
+		    	$('#fivetyUp').attr('src','images/50UpGrey.png');
+		    });
+		});
+		</script>
+		
+		<link href="css/printflow.css" rel="stylesheet">
+    </head>
+    <body style="background-color: black;" onload="init();">
+        <div class="screen">
+            <div class="main">
+				<div class="title">CONTROLS</div>
+				<a href="printPage.html">
+					<img class="homeButton" src="images/homePage.png">
+				</a>
+				
+				<a href="index.html">
+					<img class="filesButton" src="images/filesPage.png">
+				</a>
+				
+				<a href="controls.html">
+					<img class="controlsButton" src="images/settingsPage_active.png">
+				</a>
+				<a href="wifisettings.html">
+					<img name="wifi" id="wifi" class="wifi" src="images/pixel.png">
+				</a>
+				
+				<img name="1Down" class="oneDown" id="oneDown" src="images/1Down.png" onclick="changez(-1,500)">
+				<img name="10Down" class="tenDown" id="tenDown" src="images/10Down.png" onclick="changez(-10,500)">
+				<img name="1Up" class="oneUp" id="oneUp" src="images/1Up.png" onclick="changez(1,500)">
+				<img name="10Up" class="tenUp" id="tenUp" src="images/10Up.png" onclick="changez(10,500)">
+				<img name="50Up" class="fivetyUp" id="fivetyUp" src="images/50Up.png" onclick="changez(50,500)">
+				
+				<img name="home" class="home homeClick" id="home" src="images/home.png" onclick="homez()">
+				
+				<a href="Test_screen_warning.html">
+					<img name="enable" class="enable testClick" id="enable" src="images/testDisplay.png">
+				</a>	
+            </div>
+        </div>
+
+	
+    </body>
+</html>

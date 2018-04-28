@@ -1,0 +1,103 @@
+<html>
+    <head>
+        <title>Error Page</title>
+        <style>
+
+        </style>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="../jquery/jquery.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="../bootstrap/js/bootstrap.min.js"></script>
+
+        <!-- Latest v1 Angular -->
+        <script src="../angular/js/angular.min.js"></script>
+
+        <script src="js/moment.min.js"></script>
+		
+		<script src="js/printflow.js"></script>	
+		<script src="js/js.cookie.js"></script>
+		
+		<script>
+			function init(){
+			// just grabbing the first printer available, since it's embedded this should be fine :)! Only downside printer would need to be started!
+			$.getJSON('/services/printers/getFirstAvailablePrinter').success(function(data) {
+	   	        configurationObject = data["configuration"];
+	   	    	printerName = configurationObject["name"];
+		     })
+				startpage();
+			}
+			
+		function showLogo() {
+			$.getJSON('../services/printers/showLogo/'+printerName).success(function(data) {
+				window.location.href="controls.html";
+			})
+		}
+		
+$(document).ready(function(){
+		    $(".okButton").mouseup(function(){
+		    	$('#okButton').attr('src','images/ok.png');
+		    });
+		    $(".okButton").mousedown(function(){
+		    	$('#okButton').attr('src','images/okClicked.png');
+		    });
+		    
+		    $(".cancelButton").mouseup(function(){
+		    	$('#cancelButton').attr('src','images/cancel.png');
+		    });
+		    $(".cancelButton").mousedown(function(){
+		    	$('#cancelButton').attr('src','images/cancelClicked.png');
+		    });
+		    $(".fivetyUp").mouseup(function(){
+		    	$('#fivetyUp').attr('src','images/50Up.png');
+		    });
+		    $(".fivetyUp").mousedown(function(){
+		    	$('#fivetyUp').attr('src','images/50UpGrey.png');
+		    });
+		 
+		});
+		</script>
+		
+		<link href="css/printflow.css" rel="stylesheet">
+    </head>
+    <body style="background-color: black;" onload="init();">
+		
+        <div class="screen">
+            <div class="main">
+				<a href="printPage.html">
+					<img class="homeButton" src="images/homePage.png">
+				</a>
+            <a href="controls.html">
+					<img class="controlsButton" src="images/settingsPage_active.png">
+				</a>
+
+            <a href="index.html">
+					<img class="filesButton" src="images/filesPage.png">
+				</a>
+
+            <a href="controls.html">
+					<img class="controlsButton" src="images/pixel.png">
+				</a>
+            <a href="wifisettings.html">
+					<img name="wifi" id="wifi" class="wifi" src="images/testScreenWarning.png">
+				</a>
+			
+			<img name="testScreenWarning" class="testScreenWarning" src="images/testScreenWarning.png">
+				
+			<img name="okButton" class="okButton" id="okButton" src="images/ok.png" onclick="showLogo()">
+			
+			<a href ="controls.html">
+				<img name="cancelButton" class="cancelButton" id="cancelButton" src="images/cancel.png">
+			</a>
+			
+		
+				
+			</div>
+        </div>
+
+	
+    </body>
+</html>

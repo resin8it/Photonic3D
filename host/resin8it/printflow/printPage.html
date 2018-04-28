@@ -1,0 +1,374 @@
+<html>
+
+<head>
+    <title>Main Menu</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="../jquery/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Latest v1 Angular -->
+    <script src="../angular/js/angular.min.js"></script>
+
+    <script src="js/moment.min.js"></script>
+
+    <script src="js/printflow.js"></script>
+
+    <script src="js/js.cookie.js"></script>
+
+    <script src="js/progressbar.min.js"></script>
+
+    <link href="css/printflow.css" rel="stylesheet">
+    <style>
+    </style>
+
+    <script>
+        var bar = "";
+        var printText = "Please start a print";
+        var status = "";
+        var averageSlicingTime = "";
+        var currentSlice = ""
+        var totalSlices = "";
+        var elapsedTimeFormatted = "";
+        var timeToComplete = "";
+        var timeToCompleteFormatted = "";
+        var ranOnce = false;
+
+        function secondsToNiceFormat(totalSeconds) {
+            hours = Math.floor(totalSeconds / 3600);
+            totalSeconds %= 3600;
+            minutes = Math.floor(totalSeconds / 60);
+            seconds = Math.floor(totalSeconds % 60);
+            if (hours < 10) {
+                hours = "0" + hours;
+            }
+            if (minutes < 10) {
+                minutes = "0" + minutes;
+            }
+            if (seconds < 10) {
+                seconds = "0" + seconds;
+            }
+            return hours + ":" + minutes + ":" + seconds;
+        }
+
+        function refreshData() {
+            $.getJSON('../services/printJobs/getByPrinterName/' + printerName)
+                .done(function(data) {
+                    //console.log(data);
+                    if (data == null) {
+                        //console.log("we are currently not printing anymore");
+                        bar.animate(0.0);
+                        $('.playWhite').hide();
+                        $('.pauseWhite').hide();
+                        $('.stopWhite').hide();
+                        $('.playGrey').show();
+                        $('.pauseGrey').show();
+                        $('.stopGrey').show();
+                        printText = "please start a print";
+                        document.getElementById("printText").innerHTML = printText;
+                    } else {
+                    	
+               	       	$.getJSON("../services/printers/executeGCode/" + printerName + "/" + "M105")
+               	       	.done(function (response){
+		        			var currentTemprature = response.message;
+		        			temp1 = currentTemprature.slice(5 , 9);
+		        			temp2 = currentTemprature.slice(17 , 21);
+		        			document.getElementById("temp").innerHTML = temp1 + " celsius";
+		                });    	
+                        //console.log("we are printing currently");
+                        averageSlicingTime = data.averageSliceTime;
+                        totalSlices = data.totalSlices;
+                        timeToComplete = (averageSlicingTime * totalSlices) / 1000;
+                        timeToCompleteFormatted = secondsToNiceFormat(timeToComplete);
+                        //console.log(averageSlicingTime);
+                        //console.log(totalSlices);
+                        //console.log(timeToComplete);
+
+                        status = data.status;
+                        //console.log(status);
+                        starttime = parseInt(data.startTime);
+                        currentslice = parseInt(data.currentSlice);
+                        totalslices = parseInt(data.totalSlices);
+                        jobId = (data.id);
+                        runningjobName = (data.jobName);
+                        percentageComplete = currentslice / totalslices;
+                        bar.animate(percentageComplete);
+                        roundPercantage = Math.round(percentageComplete * 10000) / 100
+                        document.getElementById("progress-percentage").innerHTML = roundPercantage + "%";
+                        document.getElementById("jobName").innerHTML = runningjobName;
+                        document.getElementById("layers").innerHTML = currentslice + " / " + totalslices;
+                        document.getElementById("speed").innerHTML = averageSlicingTime + " ms";
+       
+						if(ranOnce == false){
+							elapsedTime = data.elapsedTime / 1000;
+							elapsedTimeFormatted = secondsToNiceFormat(elapsedTime);
+							document.getElementById("time").innerHTML=elapsedTimeFormatted + " / <br>" + timeToCompleteFormatted;
+							ranOnce = true;
+						}
+				//document.getElementById("layers").innerHTML=currentSlice + "/" + totalSlices;
+                        Cookies.set('laststartedjob', jobId);
+                        if (status == "Printing") {
+                            $('.playWhite').hide();
+                            $('.pauseWhite').show();
+                            $('.stopWhite').show();
+                            $('.playGrey').show();
+                            $('.pauseGrey').hide();
+                            $('.stopGrey').hide();
+                            printText = "Printing";
+                            document.getElementById("printText").innerHTML = printText;
+                            
+                            
+                        }
+                        if (status == "Paused") {
+                            $('.playWhite').show();
+                            $('.pauseWhite').hide();
+                            $('.stopWhite').show();
+                            $('.playGrey').hide();
+                            $('.pauseGrey').show();
+                            $('.stopGrey').hide();
+                            printText = "Paused";
+                            document.getElementById("printText").innerHTML = printText;
+                        }
+
+                    }
+                })
+                .fail(function() {
+                    jobId = "FAKEe43a-f84f-446c-ade8-70182988d92c";
+                    jobname = "Dummy Test";
+                    totalslices = 720;
+                    averageslicetime = 1000;
+                    endtime = starttime + (totalslices * averageslicetime);
+                });
+        }
+
+        function init() {
+            //init progress bar 
+            bar = new ProgressBar.Line('#progress-bar', {
+                color: '#749',
+                strokeWidth: 16,
+                duration: 3000,
+                easing: 'easeInOut',
+                trailWidth: 16,
+                trailColor: '#425'
+            })
+
+
+            startpage();
+            endtime = 0;
+            temp = "";
+            initialsliceurl = "";
+            sliceHeight = 0; // set this as 0 to be safe!
+            maxHeight = 0; // set this as 0 too to be safe!
+            document.getElementById("printText").innerHTML = printText;
+
+            // just grabbing the first printer available, since it's embedded this should be fine :)! Only downside printer would need to be started!
+            $.getJSON('/services/printers/getFirstAvailablePrinter').success(function(data) {
+                configurationObject = data["configuration"];
+                printerName = configurationObject["name"];
+                refreshData();
+            });
+            
+            if (currentslice == 0 && jobId != "") {
+                    initialsliceurl = "../services/printJobs/currentSliceImage/" + jobId;
+                    document.getElementById("layerslice").src = initialsliceurl + "?q=" + currentslice;
+                }
+
+                if (currentslice > 0) {
+                    if (currentslice < totalslices) {
+                        initialsliceurl = "../services/printJobs/currentSliceImage/" + jobId;
+                        //console.log(initialsliceurl);
+                        document.getElementById("layerslice").src = initialsliceurl + "?q=" + currentslice;
+                    } else {
+                        // double check sliceHeight. If it's a crazy value, do not do the thing with raising the bed. We don't want a Z collision.
+                        if (sliceHeight <= 0.2) {
+                            var zMoveDist = maxHeight - (sliceHeight * totalslices) - 20; // magic number of 20mm for safety's sake. 
+                            if (zMoveDist > 0) {
+                                $.getJSON('../services/printers/moveZ/' + printerName + '/' + zMoveDist);
+                            }
+                        }
+                        window.location.href = ("error.html?type=success&errorname=Print Complete!&errordetails=The print of <b>" + runningjobName + "</b> has completed, taking " + moment.duration(endtime - starttime).humanize() + " altogether.&errordetails2=Please remove the print from the platform and store any uncured resin for your next print.");
+
+                    }
+                }
+
+            setInterval(function() {
+                refreshData();
+                startpage();
+
+                // checking if printer is printing
+
+                // safeguard for job completion
+                if (typeof Cookies.get('laststartedjob') !== 'undefined') {
+                    $.getJSON('/services/printJobs/get/' + Cookies.get('laststartedjob'))
+                        .done(function(data) {
+                            if (data.status == "Completed") {
+                                Cookies.remove('laststartedjob');
+                                window.location.href = ("error.html?type=success&errorname=Print Complete!&errordetails=The print of <b>" + data.jobName + "</b>  "+ " has completed, taking " + moment.duration(data.elapsedTime).humanize() + " altogether.&errordetails2=Please remove the print from the platform and store any uncured resin for your next print.");
+                            }
+                        });
+                }
+
+                if (currentslice == 0 && jobId != "") {
+                    initialsliceurl = "../services/printJobs/currentSliceImage/" + jobId;
+                    document.getElementById("layerslice").src = initialsliceurl + "?q=" + currentslice;
+                }
+
+                if (currentslice > 0) {
+                    if (currentslice < totalslices) {
+                        initialsliceurl = "../services/printJobs/currentSliceImage/" + jobId;
+                        //console.log(initialsliceurl);
+                        document.getElementById("layerslice").src = initialsliceurl + "?q=" + currentslice;
+                    } else {
+                        // double check sliceHeight. If it's a crazy value, do not do the thing with raising the bed. We don't want a Z collision.
+                        if (sliceHeight <= 0.2) {
+                            var zMoveDist = maxHeight - (sliceHeight * totalslices) - 20; // magic number of 20mm for safety's sake. 
+                            if (zMoveDist > 0) {
+                                $.getJSON('../services/printers/moveZ/' + printerName + '/' + zMoveDist);
+                            }
+                        }
+                        window.location.href = ("error.html?type=success&errorname=Print Complete!&errordetails=The print of <b>" + runningjobName + "</b> "+ " has completed, taking " + moment.duration(endtime - starttime).humanize() + " altogether.&errordetails2=Please remove the print from the platform and store any uncured resin for your next print.");
+
+                    }
+                }
+
+
+            }, 2500);
+
+
+        };
+
+        function pause() {
+            $.getJSON("../services/printJobs/togglePause/" + jobId);
+        }
+
+        function cancel() {
+            $.getJSON("../services/printJobs/stopJob/" + jobId);
+        }
+
+        $(function() {
+            $('.menulink').click(function(e) {
+                e.preventDefault();
+                $("#bg").attr('src', "img/picture1.jpg");
+            });
+        });
+        
+        	var myInterval = setInterval(function () {
+			if(status=="Printing"){
+				elapsedTime++;
+				elapsedTimeFormatted = secondsToNiceFormat(elapsedTime);
+				document.getElementById("time").innerHTML=elapsedTimeFormatted + " / <br>" + timeToCompleteFormatted;
+				//console.log(elapsedTimeFormatted);
+			}	
+		}, 1000);
+		
+		$(document).ready(function(){
+		    $(".homeClick").mouseup(function(){
+		    	$('#home').attr('src','images/home.png');
+		    });
+		    $(".homeClick").mousedown(function(){
+		    	$('#home').attr('src','images/homeGrey.png');
+		    });
+		    
+		    $(".testClick").mouseup(function(){
+		    	$('#enable').attr('src','images/testDisplay.png');
+		    });
+		    $(".testClick").mousedown(function(){
+		    	$('#enable').attr('src','images/testDisplayGrey.png');
+		    });
+		    
+		    $(".oneDown").mouseup(function(){
+		    	$('#oneDown').attr('src','images/1Down.png');
+		    });
+		    $(".oneDown").mousedown(function(){
+		    	$('#oneDown').attr('src','images/1DownGrey.png');
+		    });
+		    $(".tenDown").mouseup(function(){
+		    	$('#tenDown').attr('src','images/10Down.png');
+		    });
+		    $(".tenDown").mousedown(function(){
+		    	$('#tenDown').attr('src','images/10DownGrey.png');
+		    });
+		    $(".oneUp").mouseup(function(){
+		    	$('#oneUp').attr('src','images/1Up.png');
+		    });
+		    $(".oneUp").mousedown(function(){
+		    	$('#oneUp').attr('src','images/1UpGrey.png');
+		    });
+		    $(".tenUp").mouseup(function(){
+		    	$('#tenUp').attr('src','images/10Up.png');
+		    });
+		    $(".tenUp").mousedown(function(){
+		    	$('#tenUp').attr('src','images/10UpGrey.png');
+		    });
+		    $(".fivetyUp").mouseup(function(){
+		    	$('#fivetyUp').attr('src','images/50Up.png');
+		    });
+		    $(".fivetyUp").mousedown(function(){
+		    	$('#fivetyUp').attr('src','images/50UpGrey.png');
+		    });
+		});
+    </script>
+
+
+
+
+</head>
+
+<body style="background-color: black;" onload="init();">
+    <div class="screen">
+        <div class="main">
+            <div class="title">Print</div>
+
+
+            <a href="printPage.html">
+					<img class="homeButton" src="images/homePage_active.png">
+				</a>
+
+            <a href="index.html">
+					<img class="filesButton" src="images/filesPage.png">
+				</a>
+
+            <a href="controls.html">
+					<img class="controlsButton" src="images/settingsPage.png">
+				</a>
+            <a href="wifisettings.html">
+					<img name="wifi" id="wifi" class="wifi" src="images/pixel.png">
+				</a>
+
+            <div class="progress-bar" id="progress-bar"></div>
+			<div class="progress-percentage" id="progress-percentage"></div>
+			
+			<div class="time" id="time"></div>
+			<div class="temp" id="temp"></div>
+			<div class="layers" id="layers"></div>
+			<div class="speed" id="speed"></div>
+
+            <img id="layerslice" class="layerslice" src=""></img>
+            <img name="windowframe" id="windowframe" class="windowframe" src="images/printdialogue-frame.png">
+			
+			<img id="timeImage" class="timeImage" src="images/timeImage.png"></img>
+			<img id="tempImage" class="tempImage" src="images/tempImage.png"></img>
+			<img id="LayerImage" class="layerImage" src="images/layerImage.png"></img>
+			<img id="SpeedImage" class="speedImage" src="images/speedImage.png"></img>
+			
+            <img name="playWhite" class="play playWhite" src="images/playWhite.png" onclick="pause()">
+            <img name="playGrey" class="play playGrey" src="images/playGrey.png">
+            <img name="pauseWhite" class="pause pauseWhite" src="images/pauseWhite.png" onclick="pause()">
+            <img name="pauseGrey" class="pause pauseGrey" src="images/pauseGrey.png">
+            <img name="stopWhite" class="stop stopWhite" src="images/stopWhite.png" onclick="cancel()">
+            <img name="stopGrey" class="stop stopGrey" src="images/stopGrey.png">
+
+            <div class="printText" id="printText"> </div>
+            <div class="jobName" id="jobName"> </div>
+
+        </div>
+    </div>
+
+
+</body>
+
+</html>

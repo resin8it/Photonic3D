@@ -1,0 +1,196 @@
+<html>
+    <head>
+        <title>main menu</title>
+
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="../jquery/jquery.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="../bootstrap/js/bootstrap.min.js"></script>
+
+        <!-- Latest v1 Angular -->
+        <script src="../angular/js/angular.min.js"></script>
+
+        <script src="js/moment.min.js"></script>
+		
+		<script src="js/printflow.js"></script>
+		
+		<script src="js/js.cookie.js"></script>
+		
+		<script>
+			function refreshFunction() {
+    			location.reload(true);
+			}
+		</script> 
+		
+		<link href="css/printflow.css" rel="stylesheet">
+   		<script>
+			window.onload = init;
+			
+			function init(){
+			startpage();
+			fillList();
+			startpage();
+			$('#deletecontainer').show()
+			}
+			function startPrint(){
+				if (document.getElementById("printables").selectedIndex <0){
+					//do nothing
+					$('#warning').html("<strong>Error</strong><br>Please select an item to print!");
+					$('#warning').show();
+					setTimeout(function() {
+						$('#warning').hide();
+					}, 5000);
+				}
+				else{
+				// just grabbing the first printer available, since it's embedded this should be fine :)! Only downside printer would need to be started!
+				$.getJSON('/services/printers/getFirstAvailablePrinter').success(function(data) {
+		   	       	configurationObject = data["configuration"];
+		   	   		printerName = configurationObject["name"];
+			   	   	$.getJSON("../services/printers/startJob/"+$("#printables").val()+"/"+printerName)
+						.done(function(){
+							window.location.href="printPage.html";
+						})
+						.fail(function(response){
+							console.log(response);
+							if (response !== undefined){
+								$('#warning').html("<strong>Error</strong><br>Could not print item "+$("#printables").val());
+								$('#warning').show();
+								setTimeout(function() {
+								$('#warning').hide();
+								}, 5000);
+							}
+					});
+				})
+				.fail(function(response){
+					console.log(response);
+					$('#warning').html("<strong>Error</strong><br>Please make sure printer is started ");
+					$('#warning').show();
+					setTimeout(function() {
+					$('#warning').hide();
+					}, 5000);
+				})
+				}
+			}
+			function fillList(){
+				select = document.getElementById("printables");
+				$.getJSON('../services/printables/list')
+				.done(function(data){
+					$.each(data, function (key, val) {
+						option = document.createElement('option');
+						option.text = option.value = val.name+"."+val.extension;
+						select.add( option );
+					});
+					var options = $("#printables option");                    // Collect options         
+					options.detach().sort(function(a,b) {               // Detach from select, then Sort
+						var at = $(a).text().toLowerCase();
+						var bt = $(b).text().toLowerCase();         
+						return (at > bt)?1:((at < bt)?-1:0);            // Tell the sort function how to order
+					});
+					options.appendTo("#printables");        
+				})
+				.fail(function(){
+					
+				});
+			}
+				
+			function dodeletecheck(){
+				if ($("#printables").val()!==null){
+					var maxlength=20; //sorry, magic number. best fit for the font size and screen element size
+					var smallfname=$("#printables").val();
+					var extension = smallfname.split(".")[smallfname.split(".").length-1];
+					if ($("#printables").val().length > maxlength){
+						smallfname= smallfname.substring(0,smallfname.length-1-extension.length).match(/[A-Z,a-z]+\w{0,12}/g).join('&#8203;')+"&#8203;."+extension+"";
+						
+					}
+					
+					document.getElementById("deletequery").innerHTML ="Are you sure you want to delete "+smallfname+"?<br><br><br>";
+					$('#deletewarn').show();
+					$('#deletewarn').css('z-index',50);
+					$('#deletecontainer').hide()
+					$('#delete').attr('src','images/delete_inactive.png');
+				}
+			}
+				
+			function deletefile(){
+				$.getJSON("../services/printables/delete/"+$("#printables").val())
+					.done(function(){
+						document.getElementById("deletequery").innerHTML = "";
+						$('#deletewarn').css('z-index',-50);
+						$('#deletewarn').hide();
+						$('#delete').attr('src','images/delete_inactive.png');
+
+						var options = $("#printables option");                    // Collect options         
+						options.detach();
+						fillList();
+				})
+				.fail(function(){
+					$('#warning').html("<strong>Error</strong><br>Could not delete item "+$("#printables").val());
+					$('#warning').show();
+					setTimeout(function() {
+					$('#warning').hide();
+					}, 5000);
+				});
+			}
+			function showcontrol(){
+				$('#deletecontainer').show();
+				$('#deletewarn').hide();
+				$('#delete').attr('src','images/delete.png');
+			}
+			
+		 	$(document).ready(function(){
+				$(".startPrintButton").mouseup(function(){
+		    		$('#startPrintButton').attr('src','images/print.png');
+		    	});
+		    	$(".startPrintButton").mousedown(function(){
+		    		$('#startPrintButton').attr('src','images/print_active.png');
+		    	});
+			});
+		</script>
+  </head>
+    <body style="background-color: black;" onload="init();">
+        <div class="screen">
+            <div class="main">
+            	<div class="title">FILES</div>
+				<img src="images/FILE_LIST_BG.png" usemap="printables" class="printablesuilayer">
+
+				<a href="printPage.html">
+					<img class="homeButton" src="images/homePage.png">
+				</a>
+				
+				<a href="index.html">
+					<img class="filesButton" src="images/filesPage_active.png">
+				</a>
+				
+				<a href="controls.html">
+					<img class="controlsButton" src="images/settingsPage.png">
+				</a>
+				<a href="wifisettings.html">
+					<img name="wifi" id="wifi" class="wifi" src="images/pixel.png">
+				</a>
+
+				<div class="deletecontainer collapse" id="deletecontainer"><img name="delete" id="delete" class="delete" src="images/delete_inactive.png" onclick="dodeletecheck();"></div>
+				
+
+				<div name="printbutton" class="printbutton" id="printbutton" onClick="startPrint();"><img name="startPrintButton" id="startPrintButton" class="startPrintButton" src="images/print.png"></div>
+				<select size="6" class="printables" id="printables" onClick="showcontrol();" onChange="showcontrol();">
+				</select>
+			
+				<div name="printwarn" id="warn" class="warn"><div id="warning" role="alert" class="alert alert-danger collapse" ></div></div>
+				<div name="deletecheck" id="deletecheck" class="deletecheck">
+					<div id="deletewarn" role="alert" class="alert alert-warning collapse" >
+						<div id="deletequery"></div>
+							<button type="button" class="btn btn-danger btn-block btn-lg" onclick="deletefile();">Yes</button>
+							<button type="button" class="btn btn-default btn-block btn-lg" onclick="$('#deletewarn').hide();">No</button>
+					</div>
+				</div>
+	
+            </div>
+        </div>
+
+	
+    </body>
+</html>

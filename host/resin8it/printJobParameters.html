@@ -1,0 +1,17 @@
+<div class="panel panel-default bootcards-media" ng-show="printJobsController.currentPrintJob">
+	<div class="panel-heading">
+		<span class="pull-left fa-stack fa-lg">
+			<i class="fa fa-stack-1x fa-2x fa-print"></i>
+		</span>
+		<h3 class="panel-title">Printer status off: {{printJobsController.currentPrintJob.printer.configuration.MachineConfigurationName}}</h3>
+	</div>
+	<div class="panel-body">
+		<b class="cwh-text-indent">Current temperature1: {{printJobsController.temp1}} </b><br>
+		<b class="cwh-text-indent">Current temperature2: {{printJobsController.temp2}} </b><br>
+		<b class="cwh-text-indent">Current Z position: {{printJobsController.zHeight}} </b><br>
+	</div>
+
+	<div class="panel-footer">
+		<span ng-include="'cardFooter.html'"></span>
+	</div>
+</div>
