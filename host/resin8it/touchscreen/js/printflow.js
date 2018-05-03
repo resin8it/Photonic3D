@@ -28,12 +28,12 @@ function startpage(){
                 else document.getElementById("wifi").src="images/wifi-nc.png";
         }
         else{
-                wifiupdate();
+                //wifiupdate();
         }
         
         setInterval(function() {
                 //wifi updating
-                wifiupdate();    
+                //wifiupdate();    
 	}, 3000);
 }
 
@@ -54,7 +54,7 @@ function printerStatus(){
         }
 }
 
-
+/*
 function wifiupdate(){
 	//TODO: JSON to query the server's wifi status and display it
         
@@ -89,7 +89,7 @@ function wifiupdate(){
 
 	document.getElementById("wifi").src = wifiurl;
 }
-            
+*/            
 
 
 function urlParam (name){
