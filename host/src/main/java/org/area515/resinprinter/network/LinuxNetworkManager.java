@@ -98,11 +98,13 @@ public class LinuxNetworkManager implements NetworkManager {
 	public List<NetInterface> getNetworkInterfaces() {
 		List<NetInterface> ifaces = new ArrayList<NetInterface>();
 		String[] nics = IOUtilities.executeNativeCommand(new String[]{"/bin/sh", "-c", "ifconfig | grep flags | awk '''{ print $1 }'''"}, null);
-		logger.info("nics returned :" + nics);
 		for (String nicName : nics) {
+			logger.info("nicname returned :" + nicName);
+			logger.info("nics returned :" + nics);
 			NetInterface netFace = new NetInterface();
 			netFace.setName(nicName);
 			ifaces.add(netFace);
+			logger.info("ifaces returned :" + ifaces);
 			
 			Boolean doneLookingForWifi = null;
 			while (doneLookingForWifi == null || !doneLookingForWifi) {
