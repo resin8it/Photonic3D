@@ -94,7 +94,7 @@ public class LinuxNetworkManager implements NetworkManager {
 	@Override
 	public List<NetInterface> getNetworkInterfaces() {
 		List<NetInterface> ifaces = new ArrayList<NetInterface>();
-		String[] nics = IOUtilities.executeNativeCommand(new String[]{"sudo /bin/sh", "-c", "ifconfig | grep Link | awk '''{ print $1 }'''"}, null);
+		String[] nics = IOUtilities.executeNativeCommand(new String[]{"sudo", "/bin/sh", "-c", "ifconfig | grep Link | awk '''{ print $1 }'''"}, null);
 		
 		for (String nicName : nics) {
 			NetInterface netFace = new NetInterface();
@@ -103,7 +103,7 @@ public class LinuxNetworkManager implements NetworkManager {
 			
 			Boolean doneLookingForWifi = null;
 			while (doneLookingForWifi == null || !doneLookingForWifi) {
-				String[] wpaSupplicants = IOUtilities.executeNativeCommand(new String[]{"sudo wpa_cli", "-i", "{0}", "ping"}, null, nicName);
+				String[] wpaSupplicants = IOUtilities.executeNativeCommand(new String[]{"sudo", "wpa_cli", "-i", "{0}", "ping"}, null, nicName);
 				if (wpaSupplicants.length > 0 && wpaSupplicants[0].trim().equals("PONG")) {
 					buildWirelessInfo(nicName, netFace);
 					doneLookingForWifi = true;
