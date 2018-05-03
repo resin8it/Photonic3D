@@ -97,7 +97,7 @@ public class LinuxNetworkManager implements NetworkManager {
 	@Override
 	public List<NetInterface> getNetworkInterfaces() {
 		List<NetInterface> ifaces = new ArrayList<NetInterface>();
-		String[] nics = IOUtilities.executeNativeCommand(new String[]{"/bin/sh", "-c", "ifconfig | grep flags | awk '''{ print $1 }'''"}, null);
+		String[] nics = IOUtilities.executeNativeCommand(new String[]{"/bin/sh", "-c", "ifconfig | grep flags | awk '''{ print substr($1, 1, length($1)-1)}'''"}, null);
 		for (String nicName : nics) {
 			logger.info("nicname returned :" + nicName);
 			logger.info("nics returned :" + nics);
