@@ -13,12 +13,15 @@ import org.apache.commons.lang3.text.translate.EntityArrays;
 import org.apache.commons.lang3.text.translate.LookupTranslator;
 import org.apache.commons.lang3.text.translate.NumericEntityUnescaper;
 import org.apache.commons.lang3.text.translate.UnicodeUnescaper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.area515.util.IOUtilities;
 import org.area515.util.IOUtilities.ParseAction;
 import org.area515.util.IOUtilities.SearchStyle;
 
 public class LinuxNetworkManager implements NetworkManager {
 	public static final String WIFI_REGEX = "\\s*([A-Fa-f0-9:]+)\\s+(-?\\d+)\\s+(-?\\d+)\\s+([\\[\\]\\+\\-\\w]+)\\t(.+)";
+	public static final Logger logger = LogManager.getLogger();
 	
     public static final CharSequenceTranslator UNESCAPE_UNIX = 
             new AggregateTranslator(
@@ -94,8 +97,8 @@ public class LinuxNetworkManager implements NetworkManager {
 	@Override
 	public List<NetInterface> getNetworkInterfaces() {
 		List<NetInterface> ifaces = new ArrayList<NetInterface>();
-		String[] nics = IOUtilities.executeNativeCommand(new String[]{"sudo", "/bin/sh", "-c", "ifconfig | grep Link | awk '''{ print $1 }'''"}, null);
-		
+		String[] nics = IOUtilities.executeNativeCommand(new String[]{"/bin/sh", "-c", "ifconfig | grep Link | awk '''{ print $1 }'''"}, null);
+		logger.info("nics returned :" + nics);
 		for (String nicName : nics) {
 			NetInterface netFace = new NetInterface();
 			netFace.setName(nicName);
@@ -103,7 +106,7 @@ public class LinuxNetworkManager implements NetworkManager {
 			
 			Boolean doneLookingForWifi = null;
 			while (doneLookingForWifi == null || !doneLookingForWifi) {
-				String[] wpaSupplicants = IOUtilities.executeNativeCommand(new String[]{"sudo", "wpa_cli", "-i", "{0}", "ping"}, null, nicName);
+				String[] wpaSupplicants = IOUtilities.executeNativeCommand(new String[]{"wpa_cli", "-i", "{0}", "ping"}, null, nicName);
 				if (wpaSupplicants.length > 0 && wpaSupplicants[0].trim().equals("PONG")) {
 					buildWirelessInfo(nicName, netFace);
 					doneLookingForWifi = true;
