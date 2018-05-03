@@ -630,12 +630,12 @@
 	    		function (data) {
 	    			controller.emailSettings = data;
 	    		})
-		
+		/*
 		$http.get('/services/machine/getNetworkHostConfiguration').success(
 				function(data) {
 					controller.hostConfig = data;
 				})
-	    		
+	    */		
 		$http.get("services/machine/wirelessNetworks/list").success(
 	    		function (data) {
 	    			controller.networkInterfaces = data;
