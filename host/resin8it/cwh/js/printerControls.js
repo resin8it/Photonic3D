@@ -132,21 +132,6 @@
 	            lineWidth: 3 });
 	        chart.streamTo(document.getElementById("chart"), 500);
 	      }
-	
-	      var websocketadress = "ws://" + window.location.hostname + ":8080/";
-	      var ws = new ReconnectingWebSocket(websocketadress);
-	      ws.onopen = function() {
-	        document.body.style.backgroundColor = '#cfc';
-	      };
-	      ws.onclose = function() {
-	        document.body.style.backgroundColor = null;
-	      };
-	      ws.onmessage = function(event) {
-	        var timestamp = new Date().getTime();
-		var value = event.data;
-	        console.log(value);
-		readings.append(timestamp, value);
-	      };
 		
 		function resizeCanvas() {
  			var $canvas = $("#chart");
