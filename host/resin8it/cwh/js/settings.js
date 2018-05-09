@@ -7,7 +7,7 @@
 		var unmatchedPing = -1;    //Number of pings left until we lose our connection
 		$scope.showAdvanced = false;
 		var thankYouMessage = " Thank you for unplugging the network cable. This configuration process could take a few minutes to complete. You can close your browser now and use the Photonic3D Client to find your printer.";
-		this.loadingNetworksMessage = "--- Loading wifi networks from server ---"
+		this.loadingNetworksMessage = "--- Loading wifi networks from server ---";
 		
 		var PRINTERS_DIRECTORY = "printers";
 		var BRANCH = "master";
@@ -15,18 +15,18 @@
 		
 		var tempSLicingProfile;
 		
-		this.loadingFontsMessage = "--- Loading fonts from server ---"
-		this.loadingProfilesMessage = "--- Loading slicing profiles from server ---"
-		this.loadingMachineConfigMessage = "--- Loading machine configurations from server ---"
+		this.loadingFontsMessage = "--- Loading fonts from server ---";
+		this.loadingProfilesMessage = "--- Loading slicing profiles from server ---";
+		this.loadingMachineConfigMessage = "--- Loading machine configurations from server ---";
 		this.autodirect = $location.search().autodirect;
 		
 		this.toggleAdvanced = function toggleAdvanced(){
 			$scope.showAdvanced = !$scope.showAdvanced;
-		}
+		};
 		
 		this.getAdvanced = function getAdvanced(){
 			return showAdvanced;
-		}
+		};
 		
 		function refreshSelectedPrinter(printerList) {
         	var foundPrinter = false;
