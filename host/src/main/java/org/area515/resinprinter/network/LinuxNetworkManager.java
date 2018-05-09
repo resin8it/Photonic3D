@@ -111,14 +111,12 @@ public class LinuxNetworkManager implements NetworkManager {
 	@Override
 	public List<NetInterface> getNetworkInterfaces() {
 		List<NetInterface> ifaces = new ArrayList<NetInterface>();
-		String[] nics = IOUtilities.executeNativeCommand(new String[]{"/bin/sh", "-c", "ifconfig | grep flags | awk '''{ print substr($1, 1, length($1)-1)}'''"}, null);
+		String[] nics = IOUtilities.executeNativeCommand(new String[]{"/bin/sh", "-c", "ip -o link show | awk '''{print substr($2, 1, length($2)-1)}'''"}, null);
+		
 		for (String nicName : nics) {
-			logger.info("nicname returned :" + nicName);
-			logger.info("nics returned :" + nics);
 			NetInterface netFace = new NetInterface();
 			netFace.setName(nicName);
 			ifaces.add(netFace);
-			logger.info("ifaces returned :" + ifaces);
 			
 			Boolean doneLookingForWifi = null;
 			while (doneLookingForWifi == null || !doneLookingForWifi) {
