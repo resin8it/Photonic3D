@@ -381,6 +381,9 @@
 		}
 		
 		this.writeHBridgeCode = function writeHBridgeCode() {
+			console.log(controller.currentPrinter.configuration);
+			console.log(controller.currentPrinter.configuration.slicingProfile);
+			console.log(controller.currentPrinter.configuration.slicingProfile.TwoDimensionalSettings);
 			controller.currentPrinter.configuration.slicingProfile.TwoDimensionalSettings.PlatformCalculator = 
 				        "var hBridgeInMM = {\n" +
 						"   wallWidth:1,\n" +
@@ -630,12 +633,12 @@
 	    		function (data) {
 	    			controller.emailSettings = data;
 	    		})
-		/*
+		
 		$http.get('/services/machine/getNetworkHostConfiguration').success(
 				function(data) {
 					controller.hostConfig = data;
 				})
-	    */		
+	    		
 		$http.get("services/machine/wirelessNetworks/list").success(
 	    		function (data) {
 	    			controller.networkInterfaces = data;
