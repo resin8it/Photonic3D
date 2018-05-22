@@ -56,6 +56,11 @@ public class MockNetworkManager implements NetworkManager {
 		iFaces.add(netInterface2);
 		return iFaces;
 	}
+	
+	@Override
+	public String getCurrentSSID() {
+		return "test";
+	}
 
 	@Override
 	public void connectToWirelessNetwork(WirelessNetwork net) {

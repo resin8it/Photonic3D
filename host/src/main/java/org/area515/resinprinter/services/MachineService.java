@@ -572,7 +572,6 @@ public class MachineService {
 			return null;
 		}
 	 }
-    
     @ApiOperation(value = "Enumerates Printer interfaces' IPs, MACs and HostName.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = SwaggerMetadata.SUCCESS),

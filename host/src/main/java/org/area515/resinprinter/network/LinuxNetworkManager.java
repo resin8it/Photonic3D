@@ -28,6 +28,17 @@ public class LinuxNetworkManager implements NetworkManager {
 	public static final String WIFI_REGEX = "\\s*([A-Fa-f0-9:]+)\\s+(-?\\d+)\\s+(-?\\d+)\\s+([\\[\\]\\+\\-\\w]+)\\t(.+)";
     private static final Logger logger = LogManager.getLogger();
 	
+	public String getCurrentSSID(){
+		// Can use iwgetid -r to get a basic SSID
+		String[] output = IOUtilities.executeNativeCommand(new String[]{"iwgetid", "-r"}, null, (String) null);
+		if (output.length > 0) {
+			return output[0];
+		}
+		else {
+			return null;
+		}
+	}
+	
     public static final CharSequenceTranslator UNESCAPE_UNIX = 
             new AggregateTranslator(
                 new LookupTranslator(EntityArrays.BASIC_UNESCAPE()),
