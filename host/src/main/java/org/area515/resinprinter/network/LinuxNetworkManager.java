@@ -40,7 +40,7 @@ public class LinuxNetworkManager implements NetworkManager {
 	}
 	
 	public String getCurrentWiFiStrength(){
-		String[] output = IOUtilities.executeNativeCommand(new String[]{"/bin/sh", "cat /proc/net/wireless | awk 'END { print $4 }' | sed 's/.$//'"}, null);
+		String[] output = IOUtilities.executeNativeCommand(new String[]{"/bin/sh", "-c", "cat /proc/net/wireless | awk 'END { print $4 }' | sed 's/.$//'"}, null);
 		if (output.length > 0) {
 			return output[0];
 		}
