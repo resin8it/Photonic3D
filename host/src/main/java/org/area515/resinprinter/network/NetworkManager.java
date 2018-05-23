@@ -11,4 +11,5 @@ public interface NetworkManager {
 	public Map<String, String> getMACs();
 	public void setHostname(String hostname);
 	public String getCurrentSSID();
+	public String getCurrentWiFiStrength();
 }

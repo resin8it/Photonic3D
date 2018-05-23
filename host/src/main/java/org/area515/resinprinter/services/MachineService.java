@@ -554,21 +554,11 @@ public class MachineService {
 		Class<NetworkManager> managerClass = HostProperties.Instance().getNetworkManagerClass();
 		try {
 			NetworkManager networkManager = managerClass.newInstance();
-			List<NetInterface> interfaces = networkManager.getNetworkInterfaces();
-			String currentSSID = networkManager.getCurrentSSID();
 			String signal = "-100";
-
-			for (NetInterface network : interfaces) {
-				for (WirelessNetwork wnetwork : network.getWirelessNetworks()) {
-					if (wnetwork.getSsid().compareToIgnoreCase(currentSSID)==0){
-						signal = wnetwork.getSignalStrength();
-					}
-				}
-			}
-			
+			signal = networkManager.getCurrentWiFiStrength();
 			return signal;
 		} catch (InstantiationException | IllegalAccessException e) {
-			logger.error("Error retrieving wireless networks", e);
+			logger.error("Error retrieving wireless networks signal", e);
 			return null;
 		}
 	 }

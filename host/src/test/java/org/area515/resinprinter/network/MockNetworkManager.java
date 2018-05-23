@@ -61,6 +61,11 @@ public class MockNetworkManager implements NetworkManager {
 	public String getCurrentSSID() {
 		return "test";
 	}
+	
+	@Override 
+	public String getCurrentWiFiStrength() {
+		return "test";
+	}
 
 	@Override
 	public void connectToWirelessNetwork(WirelessNetwork net) {

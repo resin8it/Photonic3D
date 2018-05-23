@@ -39,6 +39,16 @@ public class LinuxNetworkManager implements NetworkManager {
 		}
 	}
 	
+	public String getCurrentWiFiStrength(){
+		String[] output = IOUtilities.executeNativeCommand(new String[]{"/bin/sh", "cat /proc/net/wireless | awk 'END { print $4 }' | sed 's/.$//'"}, null);
+		if (output.length > 0) {
+			return output[0];
+		}
+		else {
+			return null;
+		}
+	}
+	
     public static final CharSequenceTranslator UNESCAPE_UNIX = 
             new AggregateTranslator(
                 new LookupTranslator(EntityArrays.BASIC_UNESCAPE()),
