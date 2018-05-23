@@ -32,6 +32,7 @@ public class LinuxNetworkManager implements NetworkManager {
 		// Can use iwgetid -r to get a basic SSID
 		String[] output = IOUtilities.executeNativeCommand(new String[]{"iwgetid", "-r"}, null, (String) null);
 		if (output.length > 0) {
+			logger.info("Wireless SSID :" + output);
 			return output[0];
 		}
 		else {
@@ -42,6 +43,7 @@ public class LinuxNetworkManager implements NetworkManager {
 	public String getCurrentWiFiStrength(){
 		String[] output = IOUtilities.executeNativeCommand(new String[]{"/bin/sh", "-c", "cat /proc/net/wireless | awk 'END { print $4 }' | sed 's/.$//'"}, null);
 		if (output.length > 0) {
+			logger.info("Wireless strength :" + output);
 			return output[0];
 		}
 		else {
