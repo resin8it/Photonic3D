@@ -332,7 +332,6 @@ public class IOUtilities {
 			for (int t = 0; t < commands.length; t++) {
 				replacedCommands[t] = MessageFormat.format(commands[t], (Object[])arguments);
 			}
-			logger.info("The command ran was :" + replacedCommands);
 			listSSIDProcess = Runtime.getRuntime().exec(replacedCommands);
 			ByteArrayOutputStream output = new ByteArrayOutputStream();
 			IOUtils.copy(listSSIDProcess.getInputStream(), output);

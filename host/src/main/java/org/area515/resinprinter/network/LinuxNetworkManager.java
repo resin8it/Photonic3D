@@ -41,9 +41,8 @@ public class LinuxNetworkManager implements NetworkManager {
 	}
 	
 	public String getCurrentWiFiStrength(){
-		String[] output = IOUtilities.executeNativeCommand(new String[]{"/bin/sh", "-c", "cat /proc/net/wireless | awk 'END { print $4 }' | sed 's/.$//'"}, null);
+		String[] output = IOUtilities.executeNativeCommand(new String[]{"/bin/sh", "-c", "\"cat /proc/net/wireless | awk 'END {print \\$4;}' | sed 's/.$//'\""}, null);
 		if (output.length > 0) {
-			logger.info("Wireless strength :" + output);
 			return output[0];
 		}
 		else {
