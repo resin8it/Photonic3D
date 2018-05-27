@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -599,7 +600,13 @@ public class MachineService {
     			NetworkManager networkManager = managerClass.newInstance();
     			networkManager.setHostname(host);
     			logger.debug("Set new hostname to: " + host);
-    			return new MachineResponse("setNetworkHostname", true, "Changed hostname to:" + host);
+    			// Get current device settings and make new device
+    			HostInformation device = HostProperties.Instance().loadHostInformation();
+    			// create new device name
+    			device.setDeviceName(host);
+    			// save new device name
+    			HostProperties.Instance().saveHostInformation(device);
+    			return new MachineResponse("setNetworkHostname", true, "Changed hostname and device name to:" + host);
     		} catch (InstantiationException | IllegalAccessException e) {
     			logger.error("Error setting new hostname", e);
     			return new MachineResponse("setNetworkHostname", false, e.getMessage());
