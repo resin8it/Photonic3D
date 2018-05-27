@@ -56,11 +56,11 @@
 					<span class="btn-group" >
 						<a class="btn btn-danger btn-sm" ng-click="printerControlsController.executeStaticGCode('M454', false)" style="width: 132px;">
 							<b class="fa fa-toggle-off"></b> 
-							<b class="cwh-text-indent">LED OFF (M42)</b>
+							<b class="cwh-text-indent">LED OFF</b>
 						</a>
-						<a class="btn btn-success btn-sm" ng-click="printerControlsController.executeStaticGCode('M453', false)" style="width: 132px;">
+						<a class="btn btn-danger btn-sm" ng-click="printerControlsController.executeStaticGCode('M450', false);printerControlsController.executeStaticGCode('M452 S500', false);printerControlsController.executeStaticGCode('M453', false)" style="width: 132px;">
 							<b class="fa fa-toggle-on"></b>
-							<b class="cwh-text-indent">LED ON (M42)</b>
+							<b class="cwh-text-indent">LED ON</b>
 						</a>
 					</span>
 				</div>
