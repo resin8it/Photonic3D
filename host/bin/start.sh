@@ -78,7 +78,7 @@ export DISPLAY=:0.0
 xinitProcess=`ps -ef | grep grep -v | grep xinit`
 if [ -z "${xinitProcess}" ]; then
     echo No X server running, starting and configuring one
-    startx &
+    startx -- -nocursor &
     xhost +x
 fi
 
