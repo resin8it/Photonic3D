@@ -271,6 +271,7 @@ public class CreationWorkshopSceneFileProcessor extends AbstractPrintFileProcess
 					
 					// print out comments
 					//logger.info("Ignored line:{}", currentLine);
+					//TODO parsing of the gcode for the height of the platform here
 					printer.getPrinterController().executeCommands(printJob, currentLine, true);
 			}
 			
