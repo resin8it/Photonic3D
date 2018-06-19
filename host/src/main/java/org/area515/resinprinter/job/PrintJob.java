@@ -36,7 +36,7 @@ public class PrintJob {
 	private volatile double currentSliceCost = 0;
 	private volatile PrintFileProcessor<?,?> printFileProcessor;
 	private volatile String errorDescription;
-	private volatile double currentPlatformHight = 0;
+	private volatile double currentPlatformHeight = 0;
 	
 	//Overridables
 	private volatile boolean overrideExposureTime;
@@ -321,7 +321,6 @@ public class PrintJob {
 	public void setZLiftSpeed(double zLiftSpeed) {
 		this.zLiftSpeed = zLiftSpeed;
 	}
-
 	
 	public void stopOverridingExposureTime() {
 		this.overrideExposureTime = false;
@@ -339,7 +338,6 @@ public class PrintJob {
 	public void setExposureTime(int exposureTime) {
 		this.exposureTime = exposureTime;
 	}
-
 	
 	public long getAverageSliceTime() {
 		return averageSliceTime;
@@ -360,6 +358,14 @@ public class PrintJob {
 	}
 	public void setCurrentSliceCost(double currentSliceCost) {
 		this.currentSliceCost = currentSliceCost;
+	}
+	
+	public double getCurrentPlatformHeight() {
+		return currentPlatformHeight;
+	}
+	
+	public void setCurrentPlatformHeight(double platformHeight) {
+		this.currentPlatformHeight = platformHeight; 
 	}
 	
 	public void completeRenderingSlice(long sliceTime, Double buildAreaInMM) {
