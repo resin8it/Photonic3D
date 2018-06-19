@@ -60,7 +60,6 @@
                 .done(function(data) {
                     //console.log(data);
                     if (data == null) {
-                        //console.log("we are currently not printing anymore");
                         bar.animate(0.0);
                         $('.playWhite').hide();
                         $('.pauseWhite').hide();
@@ -79,17 +78,11 @@
 		        			temp2 = currentTemprature.slice(17 , 21);
 		        			document.getElementById("temp").innerHTML = temp1 + " celsius";
 		                });    	
-                        //console.log("we are printing currently");
                         averageSlicingTime = data.averageSliceTime;
                         totalSlices = data.totalSlices;
                         timeToComplete = (averageSlicingTime * totalSlices) / 1000;
                         timeToCompleteFormatted = secondsToNiceFormat(timeToComplete);
-                        //console.log(averageSlicingTime);
-                        //console.log(totalSlices);
-                        //console.log(timeToComplete);
-
                         status = data.status;
-                        //console.log(status);
                         starttime = parseInt(data.startTime);
                         currentslice = parseInt(data.currentSlice);
                         totalslices = parseInt(data.totalSlices);
