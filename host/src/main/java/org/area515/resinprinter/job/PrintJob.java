@@ -36,6 +36,7 @@ public class PrintJob {
 	private volatile double currentSliceCost = 0;
 	private volatile PrintFileProcessor<?,?> printFileProcessor;
 	private volatile String errorDescription;
+	private volatile double currentPlatformHight = 0;
 	
 	//Overridables
 	private volatile boolean overrideExposureTime;
