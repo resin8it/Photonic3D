@@ -154,6 +154,9 @@ public class CreationWorkshopSceneFileProcessor extends AbstractPrintFileProcess
 			Pattern liftSpeedPattern = Pattern.compile(   "\\s*;\\s*\\(?\\s*Z\\s*Lift\\s*Feed\\s*Rate\\s*=\\s*([\\d\\.]+)\\s*(?:[Mm]{2}?/[Ss])?\\s*\\)?\\s*", Pattern.CASE_INSENSITIVE);
 			Pattern liftDistancePattern = Pattern.compile("\\s*;\\s*\\(?\\s*Lift\\s*Distance\\s*=\\s*([\\d\\.]+)\\s*(?:[Mm]{2})?\\s*\\)?\\s*", Pattern.CASE_INSENSITIVE);
 			Pattern sliceCountPattern = Pattern.compile("\\s*;\\s*Number\\s*of\\s*Slices\\s*=\\s*(\\d+)\\s*", Pattern.CASE_INSENSITIVE);
+			//TODO add regex for homingPattern and moving pattern
+			Pattern homingPattern = Pattern.compile("regex");
+			Pattern movingPattern = Pattern.compile("regex");
 			
 			//We can't set these values, that means they aren't set to helpful values when this job starts
 			//data.printJob.setExposureTime(data.inkConfiguration.getExposureTime());
@@ -269,9 +272,23 @@ public class CreationWorkshopSceneFileProcessor extends AbstractPrintFileProcess
 						continue;
 					}*/
 					
+					matcher = homingPattern.matcher(currentLine);
+					if (matcher.matches()) {
+						//TODO add calculation of platform height here
+						printJob.setCurrentPlatformHeight(platformHeight);
+						logger.info("Found: Moving command, new platform height is ", sliceCount);
+						continue;
+					}
+					
+					matcher = movingPattern.matcher(currentLine);
+					if (matcher.matches()) {
+						printJob.setCurrentPlatformHeight(0);
+						logger.info("Found homing command, resetting platform height");
+						continue;
+					}
+					
 					// print out comments
 					//logger.info("Ignored line:{}", currentLine);
-					//TODO parsing of the gcode for the height of the platform here
 					printer.getPrinterController().executeCommands(printJob, currentLine, true);
 			}
 			
