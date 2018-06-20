@@ -144,7 +144,7 @@ public class CreationWorkshopSceneFileProcessor extends AbstractPrintFileProcess
 			File imageFileToRender = buildImageFile(gCodeFile, padLength, 0);
 			Future<RenderingContext> nextConFuture = startImageRendering(aid, imageFileToRender);
 			aid.cache.setCurrentRenderingPointer(imageFileToRender);
-
+			double platformHeight = 0;
 			int imageIndexCached = 0;
 			
 			stream = new BufferedReader(new FileReader(gCodeFile));
@@ -155,8 +155,9 @@ public class CreationWorkshopSceneFileProcessor extends AbstractPrintFileProcess
 			Pattern liftDistancePattern = Pattern.compile("\\s*;\\s*\\(?\\s*Lift\\s*Distance\\s*=\\s*([\\d\\.]+)\\s*(?:[Mm]{2})?\\s*\\)?\\s*", Pattern.CASE_INSENSITIVE);
 			Pattern sliceCountPattern = Pattern.compile("\\s*;\\s*Number\\s*of\\s*Slices\\s*=\\s*(\\d+)\\s*", Pattern.CASE_INSENSITIVE);
 			//TODO add regex for homingPattern and moving pattern
-			Pattern homingPattern = Pattern.compile("regex");
-			Pattern movingPattern = Pattern.compile("regex");
+			Pattern homingPattern = Pattern.compile("^G28\\b", Pattern.CASE_INSENSITIVE);
+			Pattern G1Pattern = Pattern.compile("^G1\\b", Pattern.CASE_INSENSITIVE);
+			Pattern movingPattern = Pattern.compile("\\bZ-?[0-9]+(?:[,.][0-9]+)?", Pattern.CASE_INSENSITIVE);
 			
 			//We can't set these values, that means they aren't set to helpful values when this job starts
 			//data.printJob.setExposureTime(data.inkConfiguration.getExposureTime());
@@ -272,18 +273,22 @@ public class CreationWorkshopSceneFileProcessor extends AbstractPrintFileProcess
 						continue;
 					}*/
 					
-					matcher = homingPattern.matcher(currentLine);
+					matcher = G1Pattern.matcher(currentLine);
 					if (matcher.matches()) {
-						//TODO add calculation of platform height here
-						printJob.setCurrentPlatformHeight(platformHeight);
-						logger.info("Found: Moving command, new platform height is ", sliceCount);
-						continue;
+						matcher = movingPattern.matcher(currentLine);
+						if (matcher.matches()) {
+							String movingHeight = matcher.group().substring(1);
+							platformHeight = printJob.getCurrentPlatformHeight() + Double.parseDouble(movingHeight);
+							printJob.setCurrentPlatformHeight(platformHeight);
+							logger.info("Found: Moving command, new platform height is ", platformHeight);
+							continue;							
+						}
 					}
 					
-					matcher = movingPattern.matcher(currentLine);
+					matcher = homingPattern.matcher(currentLine);
 					if (matcher.matches()) {
 						printJob.setCurrentPlatformHeight(0);
-						logger.info("Found homing command, resetting platform height");
+						logger.info("Found homing command, resetting platform height to 0");
 						continue;
 					}
 					
