@@ -9,6 +9,7 @@ var averageslicetime=0;
 var signalstrength = -100;
 var PRINTERONIMAGE = "images/printer-on.png";
 var PRINTEROFFIMAGE = "images/printer-off.png";
+var printerName;
             
 function startpage(){
         if (typeof Cookies.get('lastwifi') !== 'undefined'){

@@ -20,19 +20,31 @@
 		<script>
 		function init() {
 			// just grabbing the first printer available, since it's embedded this should be fine :)! Only downside printer would need to be started!
-			$.getJSON('/services/printers/getFirstAvailablePrinter').success(function(data) {
+			$.getJSON('../services/printers/getFirstAvailablePrinter').success(function(data) {
 	   	        configurationObject = data["configuration"];
 	   	    	printerName = configurationObject["name"];
+	   	    	updateHeight();
 		     })
 		     startpage();
+		     
+		}
+		
+		function updateHeight(){
+		console.log(printerName);
+		$.getJSON('../services/printers/getHeight/'+printerName).success(function(data) {
+				CurrentHeight = data["message"];
+				document.getElementById("totalHeight").innerHTML = "Current Height : " + CurrentHeight;
+		 	})
 		}
 		
 		function changez(height,speed) {
-			$.getJSON('../services/printers/executeGCode/'+printerName+'/G1 Z' + height + ' F'+ speed);  
+			$.getJSON('../services/printers/executeGCode/'+printerName+'/G1 Z' + height + ' F'+ speed);
+			updateHeight();  
 		}
 		
 		function homez() {
 			$.getJSON('../services/printers/executeGCode/'+printerName+'/G28 Z0');
+			updateHeight();
 		}
 		
 		function showLogo() {
@@ -119,6 +131,8 @@
 				<img name="50Up" class="fivetyUp" id="fivetyUp" src="images/50Up.png" onclick="changez(50,500)">
 				
 				<img name="home" class="home homeClick" id="home" src="images/home.png" onclick="homez()">
+				
+				<div name="totalHeight" id="totalHeight" class="totalheight">Total Height:<br><span id ="totalHeight" style="align-items: flex-end"><i>Calculating...</i></span></div>
 				
 				<a href="Test_screen_warning.html">
 					<img name="enable" class="enable testClick" id="enable" src="images/testDisplay.png">

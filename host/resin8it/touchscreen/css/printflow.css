@@ -270,6 +270,13 @@ img {
 	top: 142px; 
 	left: 365px;	
 }
+
+.totalHeight {
+	position: absolute;
+	top: 180px;
+	left: 520px;
+	color: white;
+}
 .wifiButton{
 	position: absolute; 
 	top: 0px; 

@@ -866,6 +866,22 @@ public class PrinterService {
     	}
     	return startPrintJob(customizer.getPrinterName(), customizer.getPrintableName() + "." + customizer.getPrintableExtension(), customizer);
 	}
+    
+    @ApiOperation(value="Gets the height of the printer")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, response=MachineResponse.class, message = SwaggerMetadata.MACHINE_RESPONSE),
+            @ApiResponse(code = 500, message = SwaggerMetadata.UNEXPECTED_ERROR)})
+	@GET
+	@Path("getHeight/{printername}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public MachineResponse getHeight(@PathParam("printername") String printerName) {
+		Printer printer = PrinterManager.Instance().getPrinter(printerName);
+		if (printer == null) {
+			return new MachineResponse("getHeight", false, "Printer:" + printerName + " not started");
+		}
+		String currentPlatformHeight = Double.toString(printer.getCurrentPlatformHeight());
+		return new MachineResponse("getHeight", true, currentPlatformHeight);
+	 }
 
     public MachineResponse startPrintJob(String printerName, String printableName, Customizer customizer) {
 		Printer printer = PrinterManager.Instance().getPrinter(printerName);
