@@ -14,4 +14,5 @@ public interface SerialCommunicationsPort {
 	public void write(byte[] data) throws IOException;
 	public byte[] read() throws IOException;
 	public void restartCommunications() throws AlreadyAssignedException, InappropriateDeviceException;
+	public void changeHeight(byte[] gcode, String pinterName);
 }

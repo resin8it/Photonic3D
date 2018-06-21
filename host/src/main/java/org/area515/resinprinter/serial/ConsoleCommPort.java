@@ -1,8 +1,13 @@
 package org.area515.resinprinter.serial;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.area515.resinprinter.printer.ComPortSettings;
+import org.area515.resinprinter.printer.Printer;
+import org.area515.resinprinter.printer.PrinterManager;
 
 public class ConsoleCommPort implements SerialCommunicationsPort {
     private static final Logger logger = LogManager.getLogger();
@@ -52,6 +57,36 @@ public class ConsoleCommPort implements SerialCommunicationsPort {
 	@Override
 	public void write(byte[] gcode) {
 		logger.info("Printer received:{}", new String(gcode));
+	}
+	
+	@Override
+	public void changeHeight(byte[] gcode, String printerName) {
+		//send gcode
+		String gcodeString = new String(gcode);
+		//patterns
+		Pattern homingPattern = Pattern.compile("^G28\\b", Pattern.CASE_INSENSITIVE);
+		Pattern G1Pattern = Pattern.compile("^G1\\b", Pattern.CASE_INSENSITIVE);
+		Pattern movingPattern = Pattern.compile("\\bZ-?[0-9]+(?:[,.][0-9]+)?", Pattern.CASE_INSENSITIVE);
+
+		Printer printer = PrinterManager.Instance().getPrinter(printerName);
+		Matcher matcher;
+		
+		matcher = G1Pattern.matcher(gcodeString);
+		if (matcher.lookingAt()) {
+			matcher = movingPattern.matcher(gcodeString);
+			if (matcher.find()) {
+				String movingHeight = matcher.group().substring(1);
+				double platformHeight = printer.getCurrentPlatformHeight() + Double.parseDouble(movingHeight);
+				logger.info("Found: Moving command, new platform height is " + platformHeight);	
+				printer.setCurrentPlatformHeight(platformHeight);						
+			}
+		}
+		
+		matcher = homingPattern.matcher(gcodeString);
+		if (matcher.lookingAt()) {
+			printer.setCurrentPlatformHeight(0);
+			logger.info("Found homing command, resetting platform height to 0");
+		}
 	}
 
 	@Override

@@ -94,7 +94,9 @@ public abstract class PrinterController {
         	boolean mustAttempt = true;
         	for (int attempt = 0; mustAttempt; attempt++) {
 	        	logger.info("Write {}: {}", attempt, cmd);
+	        	String printerName = getPrinter().getName();
 	        	getPrinter().getPrinterFirmwareSerialPort().write(cmd.getBytes());
+	        	getPrinter().getPrinterFirmwareSerialPort().changeHeight(cmd.getBytes(), printerName);
 	        	PrinterResponse response = readUntilOkOrStoppedPrinting(true);
 	        	if (response == null) {
 	        		return "";//I think this should be null, but I'm preserving backwards compatibility
@@ -135,7 +137,9 @@ public abstract class PrinterController {
         	}
         	
         	logger.info("Write: {}", cmd);
+        	String printerName = getPrinter().getName();
         	getPrinter().getPrinterFirmwareSerialPort().write(cmd.getBytes());
+        	getPrinter().getPrinterFirmwareSerialPort().changeHeight(cmd.getBytes(), printerName);
         	PrinterResponse response = readUntilOkOrStoppedPrinting(false);
         	if (response == null) {
         		return "";

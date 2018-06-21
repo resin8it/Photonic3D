@@ -52,6 +52,11 @@ public class Printer implements Named {
 	//Projector model
 	private ProjectorModel projectorModel;
 	
+	// Printer data	
+	private volatile double currentPlatformHeight = 0;
+	private volatile double temp1 = 0;
+	private volatile double temp2 = 0;
+	
 	public static enum DisplayState {
 		Calibration,
 		Grid,
@@ -385,5 +390,29 @@ public class Printer implements Named {
 		} else if (!configuration.equals(other.configuration))
 			return false;
 		return true;
+	}
+	
+	public double getCurrentPlatformHeight() {
+		return currentPlatformHeight;
+	}
+	
+	public void setCurrentPlatformHeight(double platformHeight) {
+		this.currentPlatformHeight = platformHeight; 
+	}
+	
+	public double getTemp1() {
+		return temp1;
+	}
+	
+	public void setTemp1(double temp1) {
+		this.temp1 = temp1; 
+	}
+	
+	public double getTemp2() {
+		return temp2;
+	}
+	
+	public void setTemp2(double temp2) {
+		this.temp2 = temp2; 
 	}
 }

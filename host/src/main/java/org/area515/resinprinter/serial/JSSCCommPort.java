@@ -118,6 +118,11 @@ public class JSSCCommPort implements SerialCommunicationsPort {
 			throw new IOException("Couldn't write gcode to " + name, e);
 		}
 	}
+	
+	@Override
+	public void changeHeight(byte[] gcode, String printerName) {
+		//Do nothing
+	}
 
 	@Override
 	public byte[] read() throws IOException {

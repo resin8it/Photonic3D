@@ -360,14 +360,6 @@ public class PrintJob {
 		this.currentSliceCost = currentSliceCost;
 	}
 	
-	public double getCurrentPlatformHeight() {
-		return currentPlatformHeight;
-	}
-	
-	public void setCurrentPlatformHeight(double platformHeight) {
-		this.currentPlatformHeight = platformHeight; 
-	}
-	
 	public void completeRenderingSlice(long sliceTime, Double buildAreaInMM) {
 		sliceTime -= getPrinter().getCurrentSlicePauseTime();
 		getPrinter().setCurrentSlicePauseTime(0);

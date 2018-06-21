@@ -34,6 +34,10 @@ public class CustomCommPort implements SerialCommunicationsPort {
 	public void write(byte[] gcode) throws IOException {
 		//Do nothing
 	}
+	
+	public void changeHeight(byte[] gcode, String printerName) {
+		//Do nothing
+	}
 
 	@Override
 	public byte[] read() throws IOException {
