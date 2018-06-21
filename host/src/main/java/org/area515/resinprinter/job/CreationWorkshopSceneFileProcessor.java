@@ -158,6 +158,7 @@ public class CreationWorkshopSceneFileProcessor extends AbstractPrintFileProcess
 			Pattern homingPattern = Pattern.compile("^G28\\b", Pattern.CASE_INSENSITIVE);
 			Pattern G1Pattern = Pattern.compile("^G1\\b", Pattern.CASE_INSENSITIVE);
 			Pattern movingPattern = Pattern.compile("\\bZ-?[0-9]+(?:[,.][0-9]+)?", Pattern.CASE_INSENSITIVE);
+			Pattern testPattern = Pattern.compile("^G1", Pattern.CASE_INSENSITIVE);
 			
 			//We can't set these values, that means they aren't set to helpful values when this job starts
 			//data.printJob.setExposureTime(data.inkConfiguration.getExposureTime());
@@ -274,26 +275,28 @@ public class CreationWorkshopSceneFileProcessor extends AbstractPrintFileProcess
 					}*/
 					
 					matcher = G1Pattern.matcher(currentLine);
-					if (matcher.matches()) {
+					if (matcher.lookingAt()) {
 						matcher = movingPattern.matcher(currentLine);
-						if (matcher.matches()) {
+						if (matcher.find()) {
 							String movingHeight = matcher.group().substring(1);
-							platformHeight = printJob.getCurrentPlatformHeight() + Double.parseDouble(movingHeight);
-							printJob.setCurrentPlatformHeight(platformHeight);
-							logger.info("Found: Moving command, new platform height is ", platformHeight);
-							continue;							
+							double platformHeight1 = printJob.getCurrentPlatformHeight();
+							double platformHeight2 = Double.parseDouble(movingHeight);
+							//logger.info("platform height 1: " + platformHeight1 + "and platformHeight2 : " + platformHeight2);
+							platformHeight = platformHeight1 + platformHeight2;
+							logger.info("Found: Moving command, new platform height is " + platformHeight);	
+							printJob.setCurrentPlatformHeight(platformHeight);						
 						}
 					}
 					
 					matcher = homingPattern.matcher(currentLine);
-					if (matcher.matches()) {
+					if (matcher.lookingAt()) {
 						printJob.setCurrentPlatformHeight(0);
 						logger.info("Found homing command, resetting platform height to 0");
-						continue;
 					}
 					
+					
 					// print out comments
-					//logger.info("Ignored line:{}", currentLine);
+					// logger.info("Ignored line:{}", currentLine);
 					printer.getPrinterController().executeCommands(printJob, currentLine, true);
 			}
 			
