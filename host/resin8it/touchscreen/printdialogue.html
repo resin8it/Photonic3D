@@ -182,9 +182,23 @@
     </head>
     <body style="background-color: black;" onload="init();">
 		<script>
-			endtime=0;
-			temp="";
-			initialsliceurl="";
+		"use strict";
+			//declaring variables
+			var starttime;
+			var currentslice;
+			var totalslices;
+       		var jobId;
+        	var runningjobName;
+        	var totalslices;
+			var currentslice;
+			var sliceHeight;
+			var maxHeight;
+			var firstlayertime;
+			var bottomlayers;
+			var layertime;
+			var endtime;
+			var temp="";
+			var initialsliceurl="";
 			sliceHeight = 0; // set this as 0 to be safe!
 			maxHeight = 0; // set this as 0 too to be safe!
 						
@@ -195,7 +209,6 @@
 					// get new data 
 					$.getJSON('../services/printJobs/getByPrinterName/'+printerName)
 						.done(function(data){
-						temp=data;
 						starttime=parseInt(data.startTime);
 						currentslice=parseInt(data.currentSlice);
 						totalslices=parseInt(data.totalSlices);
@@ -208,6 +221,7 @@
 						firstlayertime=parseInt(data.printer.configuration.slicingProfile.InkConfig[data.printer.configuration.slicingProfile.selectedInkConfigIndex].FirstLayerTime);
 						bottomlayers=parseInt(data.printer.configuration.slicingProfile.InkConfig[data.printer.configuration.slicingProfile.selectedInkConfigIndex].NumberofBottomLayers);
 						layertime=parseInt(data.printer.configuration.slicingProfile.InkConfig[data.printer.configuration.slicingProfile.selectedInkConfigIndex].LayerTime);
+						data=null;
 					//make the end time the biggest value of the two ways we try to calculate the data when we start the page. If it falls, that's ok, but it's preferable for the print time to fall.
 					if((starttime+data.elapsedTime+(parseInt(data.averageSliceTime)*(parseInt(data.totalSlices)-parseInt(data.currentSlice))))>starttime+(firstlayertime*bottomlayers)+(layertime*(totalslices-bottomlayers))){
 						endtime=starttime+data.elapsedTime+(parseInt(data.averageSliceTime)*(parseInt(data.totalSlices)-parseInt(data.currentSlice)));
@@ -259,7 +273,7 @@
 							document.getElementById("totaltimes").innerHTML=moment.duration(endtime-starttime).humanize();
 							initialsliceurl="../services/printJobs/currentSliceImage/"+jobId;
 							document.getElementById("layerslice").src=initialsliceurl+"?q="+currentslice;
-							document.getElementById("progress").style = "width:"+parseInt((currentslice/totalslices)*100)+"%";
+							//document.getElementById("progress").style = "width:"+parseInt((currentslice/totalslices)*100)+"%";
 						}
 						else{
 							// double check sliceHeight. If it's a crazy value, do not do the thing with raising the bed. We don't want a Z collision.
@@ -334,11 +348,11 @@
 				</div>
 				<img name="windowframe" id="windowframe" class="windowframe" src="images/printdialogue-frame.png">
 				<div name="pauseglyph" class="pauseglyph" id="pauseglyph"></div>
-				<div name="progressbardiv" class="progressbardiv">
+				<!--<div name="progressbardiv" class="progressbardiv">
 					<div id="progress" class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" style="width:0%">
 					<span class="sr-only">70% Complete</span>
 					</div>
-				</div>
+				</div>-->
             </div>
         </div>
 

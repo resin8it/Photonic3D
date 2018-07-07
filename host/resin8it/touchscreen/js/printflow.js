@@ -7,8 +7,6 @@ var elapsedtime=0;
 var starttime=0;
 var averageslicetime=0;
 var signalstrength = -100;
-var PRINTERONIMAGE = "images/printer-on.png";
-var PRINTEROFFIMAGE = "images/printer-off.png";
 var printerName;
             
 function startpage(){
@@ -36,23 +34,6 @@ function startpage(){
                 //wifi updating
                 wifiupdate();    
 	}, 3000);
-}
-
-function printerStatus(){
-        if (document.getElementById("printerstatus").src.indexOf("midchange") == -1){
-                $.getJSON("/services/printers/get/"+encodeURI(printerName)).done(function (data){
-                        if (data.started)
-                        {
-                                Cookies.set('printerstatus',PRINTERONIMAGE);
-                                document.getElementById("printerstatus").src = PRINTERONIMAGE;
-                        }
-                        else
-                        {
-                                Cookies.set('printerstatus',PRINTEROFFIMAGE);
-                                document.getElementById("printerstatus").src = PRINTEROFFIMAGE;
-                        }
-                });
-        }
 }
 
 

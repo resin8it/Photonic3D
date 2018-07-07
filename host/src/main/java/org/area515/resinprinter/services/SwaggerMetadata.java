@@ -26,7 +26,7 @@ import io.swagger.annotations.SwaggerDefinition;
 						+ "<b class=\"code\">remote/execute/{userIdOfRemoteUser}/</b>. "
 						+ "The full security prerequisites are detailed in the restful method descriptions below.</b>"
 						+ "</ul>",
-				contact = @Contact(name = "Wes Gilster", email = "wesgilster@gmail.com", url = "http://www.photonic3d.com"),
+				contact = @Contact(name = "Wes Gilster & Robin Kolk", email = "wesgilster@gmail.com", url = "http://www.photonic3d.com"),
                 version = "",
                 title = "Photonic 3D Rest API"
         ),
