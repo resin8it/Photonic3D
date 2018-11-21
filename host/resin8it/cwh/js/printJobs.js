@@ -179,14 +179,14 @@
         this.findName = function (){
         	if (controller.currentPrintJob && controller.currentPrintJob.status == "Printing"){
         		controller.printerName = controller.currentPrintJob.printer.configuration.MachineConfigurationName;
-        		updatePrinterParameters();
+        //		updatePrinterParameters();
         		
         	} else {
         		if (!controller.printerName){
 				$http.get('services/printers/getFirstAvailablePrinter').success(function(data) {
 			        this.configurationObject = data["configuration"];
 			        controller.printerName = configurationObject["name"];
-			        updatePrinterParameters();
+		//	        updatePrinterParameters();
 				})
         		} 
         	}

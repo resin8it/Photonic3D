@@ -71,13 +71,13 @@
                         document.getElementById("printText").innerHTML = printText;
                     } else {
                     	
-               	       	$.getJSON("../services/printers/executeGCode/" + printerName + "/" + "M105")
-               	       	.done(function (response){
-		        			var currentTemprature = response.message;
-		        			temp1 = currentTemprature.slice(5 , 9);
-		        			temp2 = currentTemprature.slice(17 , 21);
-		        			document.getElementById("temp").innerHTML = temp1 + " celsius";
-		                });    	
+               	       //	$.getJSON("../services/printers/executeGCode/" + printerName + "/" + "M105")
+               	       //	.done(function (response){
+		        		//	var currentTemprature = response.message;
+		        		//	temp1 = currentTemprature.slice(5 , 9);
+		        		//	temp2 = currentTemprature.slice(17 , 21);
+		        		//	document.getElementById("temp").innerHTML = temp1 + " celsius";
+		                //});    	
                         averageSlicingTime = data.averageSliceTime;
                         totalSlices = data.totalSlices;
                         timeToComplete = (averageSlicingTime * totalSlices) / 1000;
@@ -336,7 +336,7 @@
 			<!--<div class="progress-percentage" id="progress-percentage"></div>-->
 			
 			<div class="time" id="time"></div>
-			<div class="temp" id="temp"></div>
+			<!--<div class="temp" id="temp"></div>-->
 			<div class="layers" id="layers"></div>
 			<div class="speed" id="speed"></div>
 
