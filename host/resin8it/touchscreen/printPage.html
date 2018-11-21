@@ -20,14 +20,14 @@
 
     <script src="js/js.cookie.js"></script>
 
-    <!--<script src="js/progressbar.min.js"></script>-->
+    <script src="js/progressbar.min.js"></script>
 
     <link href="css/printflow.css" rel="stylesheet">
     <style>
     </style>
 
     <script>
-        //var bar = "";
+        var bar = "";
         var printText = "Please start a print";
         var status = "";
         var averageSlicingTime = "";
@@ -60,7 +60,7 @@
                 .done(function(data) {
                     //console.log(data);
                     if (data == null) {
-                        //bar.animate(0.0);
+                        bar.animate(0.0);
                         $('.playWhite').hide();
                         $('.pauseWhite').hide();
                         $('.stopWhite').hide();
@@ -89,12 +89,12 @@
                         jobId = (data.id);
                         runningjobName = (data.jobName);
                         percentageComplete = currentslice / totalslices;
-                        //bar.animate(percentageComplete);
+                        bar.animate(percentageComplete);
                         roundPercantage = Math.round(percentageComplete * 10000) / 100
-                        //document.getElementById("progress-percentage").innerHTML = roundPercantage + "%";
-                        //document.getElementById("jobName").innerHTML = runningjobName;
-                        //document.getElementById("layers").innerHTML = currentslice + " / " + totalslices;
-                        //document.getElementById("speed").innerHTML = averageSlicingTime + " ms";
+                        document.getElementById("progress-percentage").innerHTML = roundPercantage + "%";
+                        document.getElementById("jobName").innerHTML = runningjobName;
+                        document.getElementById("layers").innerHTML = currentslice + " / " + totalslices;
+                        document.getElementById("speed").innerHTML = averageSlicingTime + " ms";
        
 						if(ranOnce == false){
 							elapsedTime = data.elapsedTime / 1000;
@@ -140,14 +140,14 @@
 
         function init() {
             //init progress bar 
-            //bar = new ProgressBar.Line('#progress-bar', {
-                //color: '#749',
-                //strokeWidth: 16,
-                //duration: 3000,
-                //easing: 'easeInOut',
-                //trailWidth: 16,
-                //trailColor: '#425'
-           //})
+            bar = new ProgressBar.Line('#progress-bar', {
+                color: '#749',
+                strokeWidth: 16,
+                duration: 3000,
+                easing: 'easeInOut',
+                trailWidth: 16,
+                trailColor: '#425'
+            })
 
 
             startpage();
@@ -332,8 +332,8 @@
 					<img name="wifi" id="wifi" class="wifi" src="images/pixel.png">
 				</a>
 
-            <!--<div class="progress-bar" id="progress-bar"></div>-->
-			<!--<div class="progress-percentage" id="progress-percentage"></div>-->
+            <div class="progress-bar" id="progress-bar"></div>
+			<div class="progress-percentage" id="progress-percentage"></div>
 			
 			<div class="time" id="time"></div>
 			<!--<div class="temp" id="temp"></div>-->
